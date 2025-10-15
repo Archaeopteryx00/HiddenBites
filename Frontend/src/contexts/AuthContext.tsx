@@ -1,94 +1,113 @@
-// src/contexts/AuthContext.tsx
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { 
-  User,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged
-} from 'firebase/auth';
-import { auth, googleProvider } from '../config/firebase';
+// Frontend/src/contexts/AuthContext.tsx
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { User as FirebaseUser } from 'firebase/auth';
+import { auth } from '../config/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
-// Types
 interface AuthContextType {
-  currentUser: User | null;
+  currentUser: FirebaseUser | null;
+  userId: string | null;
+  userName: string | null;
+  userEmail: string | null;
+  userAvatar: string | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
-// Create Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Custom hook untuk menggunakan auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
   }
   return context;
 };
 
-// Auth Provider Component
-interface AuthProviderProps {
-  children: React.ReactNode;
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Sign in with Google
-  const signInWithGoogle = async (): Promise<void> => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      console.log('User signed in:', result.user.displayName);
-    } catch (error: any) {
-      console.error('Error signing in with Google:', error);
+  useEffect(() => {
+    // Listen to Firebase auth state
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
       
-      // Handle specific errors
-      if (error.code === 'auth/popup-closed-by-user') {
-        throw new Error('Sign-in dibatalkan oleh user');
-      } else if (error.code === 'auth/popup-blocked') {
-        throw new Error('Popup diblokir browser. Izinkan popup untuk website ini.');
+      if (user) {
+        // Firebase user
+        setUserId(user.uid);
+        setUserName(user.displayName);
+        setUserEmail(user.email);
+        setUserAvatar(user.photoURL);
+        
+        // Also store in localStorage
+        localStorage.setItem('userId', user.uid);
+        localStorage.setItem('userName', user.displayName || '');
+        localStorage.setItem('userEmail', user.email || '');
+        localStorage.setItem('userAvatar', user.photoURL || '');
       } else {
-        throw new Error('Gagal masuk dengan Google. Silakan coba lagi.');
+        // Check localStorage for demo users
+        const storedUserId = localStorage.getItem('userId');
+        const storedUserName = localStorage.getItem('userName');
+        const storedUserEmail = localStorage.getItem('userEmail');
+        const storedUserAvatar = localStorage.getItem('userAvatar');
+        
+        if (storedUserId) {
+          // Demo user dari localStorage
+          setUserId(storedUserId);
+          setUserName(storedUserName);
+          setUserEmail(storedUserEmail);
+          setUserAvatar(storedUserAvatar);
+        } else {
+          // No user
+          setUserId(null);
+          setUserName(null);
+          setUserEmail(null);
+          setUserAvatar(null);
+        }
       }
-    }
-  };
+      
+      setLoading(false);
+    });
 
-  // Logout
-  const logout = async (): Promise<void> => {
+    return () => unsubscribe();
+  }, []);
+
+  const logout = async () => {
     try {
+      // Sign out from Firebase
       await signOut(auth);
-      console.log('User signed out');
+      
+      // Clear localStorage
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userAvatar');
+      
+      // Clear state
+      setCurrentUser(null);
+      setUserId(null);
+      setUserName(null);
+      setUserEmail(null);
+      setUserAvatar(null);
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error('Logout error:', error);
       throw error;
     }
   };
 
-  // Listen untuk auth state changes
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-      
-      if (user) {
-        console.log('User is signed in:', user.displayName);
-      } else {
-        console.log('User is signed out');
-      }
-    });
-
-    // Cleanup subscription saat component unmount
-    return unsubscribe;
-  }, []);
-
   const value: AuthContextType = {
     currentUser,
+    userId,
+    userName,
+    userEmail,
+    userAvatar,
     loading,
-    signInWithGoogle,
-    logout
+    logout,
   };
 
   return (
