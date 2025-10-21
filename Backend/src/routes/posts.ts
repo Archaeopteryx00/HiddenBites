@@ -1,4 +1,4 @@
-// backend/src/routes/posts.ts
+// backend/src/routes/posts.ts (UPDATE)
 import { Router } from 'express';
 import prisma from '../utils/prisma';
 
@@ -77,10 +77,10 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// CREATE post
+// CREATE post (UPDATED - accept latitude & longitude)
 router.post('/', async (req, res) => {
   try {
-    const { title, description, location, imageUrl, userId } = req.body;
+    const { title, description, location, latitude, longitude, imageUrl, userId } = req.body;
 
     // Validation
     if (!title || !description || !location || !userId) {
@@ -92,11 +92,19 @@ router.post('/', async (req, res) => {
         title,
         description,
         location,
+        latitude: latitude ? parseFloat(latitude) : null,     // ← ADD THIS
+        longitude: longitude ? parseFloat(longitude) : null,   // ← ADD THIS
         imageUrl,
         userId,
       },
       include: {
         user: true,
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
       },
     });
 
@@ -107,11 +115,11 @@ router.post('/', async (req, res) => {
   }
 });
 
-// UPDATE post
+// UPDATE post (UPDATED - accept latitude & longitude)
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, location, imageUrl } = req.body;
+    const { title, description, location, latitude, longitude, imageUrl } = req.body;
 
     const post = await prisma.post.update({
       where: { id },
@@ -119,6 +127,8 @@ router.put('/:id', async (req, res) => {
         ...(title && { title }),
         ...(description && { description }),
         ...(location && { location }),
+        ...(latitude !== undefined && { latitude: parseFloat(latitude) }),     // ← ADD THIS
+        ...(longitude !== undefined && { longitude: parseFloat(longitude) }),   // ← ADD THIS
         ...(imageUrl && { imageUrl }),
       },
       include: {

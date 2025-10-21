@@ -1,10 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-// backend/prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,65 +8,67 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String?
   name      String
+  username  String?   @unique
   avatar    String?
   bio       String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  posts     Post[]
+  tags      String[]  @default([])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   comments  Comment[]
   likes     Like[]
-  
+  posts     Post[]
+
   @@map("users")
 }
 
+
 model Post {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String
   location    String
   imageUrl    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  latitude    Float?
+  longitude   Float?
   comments    Comment[]
   likes       Like[]
-  
-  @@map("posts")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([createdAt])
+  @@map("posts")
 }
 
 model Comment {
   id        String   @id @default(uuid())
   text      String
   createdAt DateTime @default(now())
-  
   userId    String
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   postId    String
-  post      Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  
-  @@map("comments")
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([postId])
   @@index([userId])
+  @@map("comments")
 }
 
 model Like {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-  
   userId    String
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   postId    String
-  post      Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, postId])
-  @@map("likes")
   @@index([postId])
+  @@map("likes")
 }
