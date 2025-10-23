@@ -8,7 +8,7 @@ import usersRouter from './routes/users';
 import commentsRouter from './routes/comments';
 import likesRouter from './routes/likes';
 import authRouter from './routes/auth';
-
+import adminRouter from './routes/admin';
 // Load environment variables
 dotenv.config();
 
@@ -55,6 +55,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/comments', commentsRouter);
 app.use('/api/likes', likesRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/admin', adminRouter);
 // Health check
 app.get('/health', (req: Request, res: Response) => {
   res.json({ 

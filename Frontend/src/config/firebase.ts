@@ -2,8 +2,13 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
-// Get these from Firebase Console → Project Settings → Your apps → Web
-// Should match your .env variables
+// Debug: Check all REACT_APP env vars
+console.log('🔍 Environment Variables:', 
+  Object.keys(process.env)
+    .filter(key => key.startsWith('REACT_APP_'))
+    .map(key => `${key}: ${process.env[key] ? '✅ Set' : '❌ Missing'}`)
+);
+
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -13,11 +18,19 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
-// Debug: Log config (without sensitive data)
-console.log('Firebase Config:', {
-  authDomain: firebaseConfig.authDomain,
-  projectId: firebaseConfig.projectId,
+// Debug: Log config
+console.log('🔥 Firebase Config:', {
+  apiKey: firebaseConfig.apiKey ? '✅ Set' : '❌ Missing',
+  authDomain: firebaseConfig.authDomain || '❌ Missing',
+  projectId: firebaseConfig.projectId || '❌ Missing',
 });
+
+// Validate
+if (!firebaseConfig.apiKey || !firebaseConfig.authDomain) {
+  console.error('❌ Firebase config is incomplete!');
+  console.error('Check your .env file in Frontend/ folder');
+  throw new Error('Firebase configuration is incomplete. Check .env file.');
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

@@ -1,17 +1,29 @@
-// Frontend/src/contexts/AuthContext.tsx
+// Frontend/src/contexts/AuthContext.tsx - Email/Password Auth
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User as FirebaseUser } from 'firebase/auth';
-import { auth } from '../config/firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  username: string;
+  avatar: string | null;
+  role: 'USER' | 'ADMIN';  // ← ADD THIS
+  bio: string | null;
+  tags: string[];
+}
 
 interface AuthContextType {
-  currentUser: FirebaseUser | null;
+  currentUser: User | null;
   userId: string | null;
   userName: string | null;
   userEmail: string | null;
   userAvatar: string | null;
+  userRole: 'USER' | 'ADMIN' | null;  // ← ADD THIS
+  isAdmin: boolean;                    // ← ADD THIS
   loading: boolean;
-  logout: () => Promise<void>;
+  isAuthenticated: boolean;
+  login: (user: User) => void;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,90 +37,65 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string | null>(null);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Load user from localStorage on mount
   useEffect(() => {
-    // Listen to Firebase auth state
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      
-      if (user) {
-        // Firebase user
-        setUserId(user.uid);
-        setUserName(user.displayName);
-        setUserEmail(user.email);
-        setUserAvatar(user.photoURL);
-        
-        // Also store in localStorage
-        localStorage.setItem('userId', user.uid);
-        localStorage.setItem('userName', user.displayName || '');
-        localStorage.setItem('userEmail', user.email || '');
-        localStorage.setItem('userAvatar', user.photoURL || '');
-      } else {
-        // Check localStorage for demo users
-        const storedUserId = localStorage.getItem('userId');
-        const storedUserName = localStorage.getItem('userName');
-        const storedUserEmail = localStorage.getItem('userEmail');
-        const storedUserAvatar = localStorage.getItem('userAvatar');
-        
-        if (storedUserId) {
-          // Demo user dari localStorage
-          setUserId(storedUserId);
-          setUserName(storedUserName);
-          setUserEmail(storedUserEmail);
-          setUserAvatar(storedUserAvatar);
-        } else {
-          // No user
-          setUserId(null);
-          setUserName(null);
-          setUserEmail(null);
-          setUserAvatar(null);
-        }
+    console.log('🔐 AuthContext: Initializing...');
+    
+    const storedUser = localStorage.getItem('user');
+    
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        console.log('✅ Found stored user:', user.username);
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Failed to parse stored user:', error);
+        localStorage.removeItem('user');
       }
-      
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    } else {
+      console.log('⚠️ No stored user found');
+    }
+    
+    setLoading(false);
   }, []);
 
-  const logout = async () => {
-    try {
-      // Sign out from Firebase
-      await signOut(auth);
-      
-      // Clear localStorage
-      localStorage.removeItem('userId');
-      localStorage.removeItem('userName');
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('userAvatar');
-      
-      // Clear state
-      setCurrentUser(null);
-      setUserId(null);
-      setUserName(null);
-      setUserEmail(null);
-      setUserAvatar(null);
-    } catch (error) {
-      console.error('Logout error:', error);
-      throw error;
-    }
+  const login = (user: User) => {
+    console.log('🚀 Login user:', user.username);
+    setCurrentUser(user);
+    localStorage.setItem('user', JSON.stringify(user));
+  };
+
+  const logout = () => {
+    console.log('🚪 Logout');
+    setCurrentUser(null);
+    localStorage.removeItem('user');
   };
 
   const value: AuthContextType = {
     currentUser,
-    userId,
-    userName,
-    userEmail,
-    userAvatar,
+    userId: currentUser?.id || null,
+    userName: currentUser?.name || null,
+    userEmail: currentUser?.email || null,
+    userAvatar: currentUser?.avatar || null,
+    userRole: currentUser?.role || null,     // ← ADD THIS
+    isAdmin: currentUser?.role === 'ADMIN',   // ← ADD THIS
     loading,
+    isAuthenticated: !!currentUser,
+    login,
     logout,
   };
+
+  // Debug log
+  useEffect(() => {
+    console.log('🔍 Auth State:', {
+      userId: currentUser?.id,
+      username: currentUser?.username,
+      isAuthenticated: !!currentUser,
+    });
+  }, [currentUser]);
 
   return (
     <AuthContext.Provider value={value}>
