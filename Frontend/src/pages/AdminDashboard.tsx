@@ -162,7 +162,7 @@ const AdminDashboard: React.FC = () => {
               className={`py-4 border-b-2 font-medium transition-colors ${
                 activeTab === 'users'
                   ? 'border-orange-500 text-orange-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  : 'border-transparent text-gray-500 hover:text-orange-500'
               }`}
             >
               Users Management
@@ -190,8 +190,8 @@ const AdminDashboard: React.FC = () => {
         )}
 
         {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
+          <div className="flex flex-col items-center justify-center py-12 text-gray-600">
+            <div className="size-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
             <p className="mt-4 text-gray-600">Loading...</p>
           </div>
         ) : (
@@ -314,7 +314,7 @@ const AdminDashboard: React.FC = () => {
                             </button>
                             <button
                               onClick={() => handleDeleteUser(user.id)}
-                              className="text-red-600 hover:text-red-900"
+                              className="text-red-600 hover:text-red-900 focus:ring-2 focus:ring-red-400 focus:outline-none"
                               disabled={user.id === currentUser?.id}
                             >
                               <Trash2 className="h-5 w-5" />
