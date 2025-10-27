@@ -59,7 +59,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
@@ -75,7 +75,7 @@ const LoginPage: React.FC = () => {
         </div>
 
         {/* Login Card */}
-        <div className="bg-white py-8 px-4 shadow-xl rounded-lg sm:px-10">
+        <div className="bg-white py-8 px-4 shadow-xl rounded-2xl sm:px-10 transition-all hover:shadow-2xl hover:-translate-y-0.5">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Error Message */}
             {error && (
@@ -100,7 +100,7 @@ const LoginPage: React.FC = () => {
                   value={formData.emailOrUsername}
                   onChange={(e) => setFormData({ ...formData, emailOrUsername: e.target.value })}
                   placeholder="john@example.com atau johndoe"
-                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                   required
                 />
               </div>
@@ -152,10 +152,10 @@ const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors ${
+              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-medium text-white transition-colors ${
                 loading
                   ? 'bg-orange-400 cursor-not-allowed'
-                  : 'bg-orange-500 hover:bg-orange-600'
+                  : 'bg-orange-500 hover:bg-orange-600 hover:shadow-lg'
               }`}
             >
               {loading ? (
@@ -220,13 +220,13 @@ const LoginPage: React.FC = () => {
         <div className="text-center space-y-2">
           <Link
             to="/feed"
-            className="block text-orange-600 hover:text-orange-700 font-medium text-sm"
+            className="block text-orange-600 hover:text-orange-700 font-semibold text-sm transition-colors"
           >
             Jelajahi Feed (Tanpa Login) →
           </Link>
           <Link
             to="/"
-            className="block text-orange-600 hover:text-orange-700 font-medium text-sm"
+            className="block text-orange-600 hover:text-orange-700 font-semibold text-sm transition-colors"
           >
             ← Kembali ke Home
           </Link>
