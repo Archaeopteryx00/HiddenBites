@@ -60,12 +60,12 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-all">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-orange-100">
-            <span className="text-2xl">🍽️</span>
+          <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-orange-100 shadow-md hover:shadow-lg transition duration-300">
+            <span className="text-2xl animate-pulse">🍽️</span>
           </div>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
             Daftar ke HiddenBites
@@ -76,7 +76,7 @@ const RegisterPage: React.FC = () => {
         </div>
 
         {/* Register Card */}
-        <div className="bg-white py-8 px-4 shadow-xl rounded-lg sm:px-10">
+        <div className="bg-white py-8 px-6 shadow-lg rounded-2xl sm:px-10 hover:shadow-xl transition duration-300">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Error Message */}
             {error && (
@@ -101,7 +101,7 @@ const RegisterPage: React.FC = () => {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="John Doe"
-                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition duration-200"
                   required
                 />
               </div>
@@ -185,10 +185,10 @@ const RegisterPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors ${
+              className={`w-full flex justify-center py-3 px-4 rounded-xl shadow-md text-sm font-semibold text-white transition-all duration-300 ${
                 loading
-                  ? 'bg-orange-400 cursor-not-allowed'
-                  : 'bg-orange-500 hover:bg-orange-600'
+                  ? 'bg-orange-300 cursor-not-allowed'
+                  : 'bg-orange-500 hover:bg-orange-600 hover:shadow-lg transform hover:scale-[1.02]'
               }`}
             >
               {loading ? (
@@ -209,7 +209,7 @@ const RegisterPage: React.FC = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Sudah punya akun?{' '}
-              <Link to="/login" className="font-medium text-orange-600 hover:text-orange-500">
+              <Link to="/login" className="font-medium text-orange-600 hover:text-orange-700 font-medium transition-colors duration-200">
                 Login di sini
               </Link>
             </p>
