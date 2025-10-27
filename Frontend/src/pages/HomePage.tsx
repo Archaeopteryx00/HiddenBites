@@ -76,13 +76,13 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-16">
+      <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-20 shadow-inner">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl font-bold mb-4">🍽️ HiddenBites</h1>
-          <p className="text-xl mb-8">Discover & Share Hidden Gem Restaurants</p>
+          <h1 className="text-5xl font-extrabold mb-4 tracking-tight drop-shadow-md">🍽️ HiddenBites</h1>
+          <p className="text-xl mb-8 opacity-90">Discover & Share Hidden Gem Restaurants</p>
           <Link
             to="/feed"
-            className="inline-block bg-white text-orange-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors"
+            className="inline-block bg-white text-orange-600 px-8 py-3 rounded-xl font-bold hover:bg-gray-100 shadow-md hover:shadow-lg transition duration-300"
           >
             Explore Feed
           </Link>
@@ -91,58 +91,58 @@ const HomePage: React.FC = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-          <div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+          <div className="p-4 bg-red-100 border border-red-300 text-red-700 rounded-lg shadow-sm text-center font-medium">
             {error}
           </div>
         </div>
       )}
 
       {/* Stats Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {/* Stats Cards */}
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
-            <div className="text-4xl font-bold text-orange-600 mb-2">{stats.posts}</div>
-            <p className="text-gray-600 font-medium">Restaurants Shared</p>
+          <div className="bg-white rounded-2x1 shadow-md p-8 text-center hover:shadow-xl transition duration-300">
+            <div className="text-5xl font-bold text-orange-600 mb-2">{stats.posts}</div>
+            <p className="text-gray-600 font-semibold tracking-wide">Restaurants Shared</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
-            <div className="text-4xl font-bold text-red-500 mb-2">{stats.likes}</div>
-            <p className="text-gray-600 font-medium">Total Likes</p>
+          <div className="bg-white rounded-2x1 shadow-lg p-8 text-center hover:shadow-xl transition duration-300">
+            <div className="text-5xl font-bold text-red-600 mb-2">{stats.likes}</div>
+            <p className="text-gray-600 font-semibold">Total Likes</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
-            <div className="text-4xl font-bold text-blue-500 mb-2">{stats.comments}</div>
-            <p className="text-gray-600 font-medium">Comments</p>
+          <div className="bg-white rounded-2x1 shadow-md p-8 text-center hover:shadow-xl transition duration-300">
+            <div className="text-5xl font-bold text-blue-500 mb-2">{stats.comments}</div>
+            <p className="text-gray-600 font-semibold">Comments</p>
           </div>
         </div>
 
         {/* Featured Posts */}
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">✨ Featured Restaurants</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-10 text-center">✨ Featured Restaurants</h2>
 
           {loading ? (
             <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
-              <p className="mt-4 text-gray-600">Loading featured posts...</p>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 border-t-transparent"></div>
+              <p className="mt-4 text-gray-600 font-medium">Loading featured posts...</p>
             </div>
           ) : featuredPosts.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-lg p-12 text-center">
-              <p className="text-gray-600 text-lg mb-4">No posts yet!</p>
+            <div className="bg-white rounded-2x1 shadow-lg p-12 text-center border-gray-100">
+              <p className="text-gray-500 text-lg mb-6 italic">No posts yet!</p>
               <Link
                 to="/feed"
-                className="inline-block bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+                className="inline-block bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-700 shadow-md hover:shadow-lg transition duration-300"
               >
                 Be the first to share
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {featuredPosts.map((post) => (
                 <div
                   key={post.id}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105 duration-300"
+                  className="bg-white rounded-2x1 shadow-md overflow-hidden hover:shadow-2x1 transition-transform transform hover:-translate-y-2 duration-300"
                 >
                   {/* Image */}
                   {post.imageUrl && (
@@ -157,19 +157,19 @@ const HomePage: React.FC = () => {
                   )}
 
                   {/* Content */}
-                  <div className="p-4">
+                  <div className="p-5">
                     {/* User Info */}
                     <div className="flex items-center mb-3">
                       <img
                         src={post.user.avatar || 'https://via.placeholder.com/30'}
                         alt={post.user.name}
-                        className="w-8 h-8 rounded-full mr-2"
+                        className="w-8 h-8 rounded-full mr-2 border-gray-200"
                       />
                       <span className="text-sm font-semibold text-gray-900">{post.user.name}</span>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 hover:text-orange-600 transition-colors">
                       {post.title}
                     </h3>
 
@@ -179,28 +179,28 @@ const HomePage: React.FC = () => {
                     </p>
 
                     {/* Description */}
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">
                       {post.description}
                     </p>
 
                     {/* Actions */}
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                       <button
                         onClick={() => handleLike(post.id)}
-                        className="flex items-center gap-1 text-gray-600 hover:text-red-500 transition-colors"
+                        className="flex items-center gap-1 text-gray-500 hover:text-red-500 transition-colors"
                       >
                         <span>❤️</span>
                         <span className="text-xs font-medium">{post._count.likes}</span>
                       </button>
 
-                      <span className="flex items-center gap-1 text-gray-600">
+                      <span className="flex items-center gap-1 text-gray-500">
                         <span>💬</span>
                         <span className="text-xs font-medium">{post._count.comments}</span>
                       </span>
 
                       <Link
                         to="/feed"
-                        className="text-orange-600 hover:text-orange-700 transition-colors text-xs font-medium"
+                        className="text-orange-600 hover:text-orange-700 transition-colors text-xs font-semibold"
                       >
                         View More →
                       </Link>
@@ -214,13 +214,13 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-orange-600 text-white py-12 mt-12">
+      <div className="bg-orange-600 text-white py-16 mt-16 shadow-inner">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Have a Hidden Gem to Share?</h2>
-          <p className="text-lg mb-6">Join our community and discover amazing restaurants!</p>
+          <h2 className="text-3xl font-extrabold mb-4 tracking-tight">Have a Hidden Gem to Share?</h2>
+          <p className="text-lg mb-8 opacity-90">Join our community and discover amazing restaurants!</p>
           <Link
             to="/login"
-            className="inline-block bg-white text-orange-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors"
+            className="inline-block bg-white text-orange-600 px-8 py-3 rounded-xl font-bold hover:bg-gray-100 shadow-md hover:shadow-lg transition duration-300"
           >
             Get Started
           </Link>
